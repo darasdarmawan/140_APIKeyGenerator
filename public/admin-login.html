@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - API Key Management System</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background: linear-gradient(135deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #1dd1a1 75%, #ee5a6f 100%); 
+      min-height: 100vh; 
+      position: relative; 
+      animation: rainbowShift 15s ease infinite; 
+      background-size: 200% 200%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    @keyframes rainbowShift { 
+      0% { background-position: 0% 50%; } 
+      50% { background-position: 100% 50%; } 
+      100% { background-position: 0% 50%; } 
+    }
+    body::before { 
+      content: ''; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background-image: linear-gradient(30deg, rgba(255,255,255,.1) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,.1) 87.5%, rgba(255,255,255,.1)), linear-gradient(150deg, rgba(255,255,255,.1) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,.1) 87.5%, rgba(255,255,255,.1)); 
+      background-size: 80px 140px; 
+      opacity: 0.3; 
+      pointer-events: none; 
+    }
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background: white;
+      padding: 50px 60px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      border-top: 4px solid transparent;
+      border-image: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1, #ee5a6f) 1;
+      animation: fadeIn 0.5s ease-out;
+      position: relative;
+      z-index: 1;
+    }
+    @keyframes fadeIn { 
+      from { opacity: 0; transform: translateY(30px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+    .header { 
+      text-align: center; 
+      margin-bottom: 40px; 
+      padding-bottom: 30px; 
+      border-bottom: 2px solid transparent; 
+      border-image: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1, #ee5a6f) 1; 
+    }
+    .logo {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    h1 { 
+      font-size: 2rem; 
+      font-weight: 700; 
+      background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1, #ee5a6f); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+      background-clip: text; 
+      margin-bottom: 10px; 
+      letter-spacing: -0.5px; 
+    }
+    .subtitle { 
+      color: #757575; 
+      font-size: 0.95rem; 
+      font-weight: 500; 
+    }
+    .form-group { 
+      margin-bottom: 24px; 
+    }
+    label { 
+      display: block; 
+      font-weight: 600; 
+      color: #424242; 
+      margin-bottom: 8px; 
+      font-size: 0.95rem; 
+    }
+    input { 
+      width: 100%; 
+      padding: 14px 18px; 
+      border: 2px solid #e0e0e0; 
+      border-radius: 10px; 
+      font-size: 0.95rem; 
+      outline: none; 
+      transition: all 0.3s; 
+      font-family: 'Inter', sans-serif; 
+      background: #fafafa; 
+      color: #333; 
+    }
+    input:focus { 
+      border: 2px solid transparent; 
+      border-image: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1) 1; 
+      background: white; 
+      box-shadow: 0 0 0 4px rgba(72,219,251,0.15); 
+    }
+    .password-toggle-btn { 
+      position: absolute; 
+      right: 12px; 
+      top: 50%; 
+      transform: translateY(-50%); 
+      background: none; 
+      border: none; 
+      cursor: pointer; 
+      padding: 5px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      color: #757575; 
+      transition: color 0.3s; 
+    }
+    .password-toggle-btn:hover { 
+      color: #48dbfb; 
+      transform: translateY(-50%); 
+      box-shadow: none; 
+    }
+    .password-toggle-btn svg { 
+      width: 24px; 
+      height: 24px; 
+    }
+    button[type="submit"] { 
+      width: 100%; 
+      background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1); 
+      border: none; 
+      color: white; 
+      padding: 16px 32px; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      font-size: 1rem; 
+      font-weight: 600; 
+      transition: all 0.3s ease; 
+      margin-top: 10px; 
+      box-shadow: 0 6px 20px rgba(72,219,251,0.3); 
+      letter-spacing: 0.3px; 
+    }
+    button:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 10px 30px rgba(72,219,251,0.5); 
+    }
+    button:active { 
+      transform: translateY(0); 
+    }
+    button:disabled { 
+      opacity: 0.6; 
+      cursor: not-allowed; 
+      transform: none; 
+    }
+    .message { 
+      padding: 14px 20px; 
+      border-radius: 10px; 
+      margin-bottom: 24px; 
+      display: none; 
+      font-weight: 500; 
+      animation: slideDown 0.4s ease-out; 
+      border-left: 4px solid; 
+    }
+    @keyframes slideDown { 
+      from { opacity: 0; transform: translateY(-10px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+    .message.success { 
+      background: #e8f5e9; 
+      color: #2e7d32; 
+      border-color: #1dd1a1; 
+      display: block; 
+    }
+    .message.error { 
+      background: #ffebee; 
+      color: #c62828; 
+      border-color: #ff6b6b; 
+      display: block; 
+    }
+    .divider { 
+      height: 2px; 
+      background: linear-gradient(90deg, transparent, #ff6b6b, #feca57, #48dbfb, #1dd1a1, transparent); 
+      margin: 30px 0; 
+    }
+    .footer-text {
+      text-align: center;
+      color: #757575;
+      font-size: 0.9rem;
+    }
+    a { 
+      background: linear-gradient(90deg, #ff6b6b, #48dbfb); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+      background-clip: text; 
+      font-weight: 600; 
+      text-decoration: none; 
+      transition: all 0.3s; 
+    }
+    a:hover { 
+      text-decoration: underline; 
+    }
+    .back-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .back-link a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(254,202,87,0.1), rgba(72,219,251,0.1));
+      border-radius: 8px;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+    .back-link a:hover {
+      border-color: #48dbfb;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(72,219,251,0.2);
+      text-decoration: none;
+    }
+    .forgot-password {
+      text-align: right;
+      margin-top: 8px;
+    }
+    .forgot-password a {
+      font-size: 0.85rem;
+    }
+    @media (max-width: 768px) { 
+      .container { 
+        padding: 35px 30px; 
+      } 
+      h1 { 
+        font-size: 1.6rem; 
+      } 
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">🌈</div>
+      <h1>Admin Login</h1>
+      <p class="subtitle">Access the admin dashboard</p>
+    </div>
+    
+    <div id="message" class="message"></div>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="email" required placeholder="admin@example.com" autocomplete="email">
+      </div>
+      
+      <div class="form-group">
+        <label>Password</label>
+        <div style="position: relative;">
+          <input type="password" id="password" required placeholder="Enter your password" style="padding-right: 50px;" autocomplete="current-password">
+          <button type="button" class="password-toggle-btn" onclick="togglePassword()">
+            <svg id="toggleIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+              <line x1="12" y1="5" x2="12" y2="3"></line>
+              <line x1="17" y1="6" x2="19" y2="4"></line>
+              <line x1="7" y1="6" x2="5" y2="4"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="forgot-password">
+          <a href="#" onclick="alert('Please contact system admin'); return false;">Forgot password?</a>
+        </div>
+      </div>
+      
+      <button type="submit">Login to Dashboard</button>
+    </form>
+    
+    <div class="divider"></div>
+    
+    <p class="footer-text">Don't have an account? <a href="admin-register.html">Register here</a></p>
+    
+    <div class="back-link">
+      <a href="index.html">← Back to Home</a>
+    </div>
+  </div>
+
+  <script>
+    const eyeOpenSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle><line x1="12" y1="5" x2="12" y2="3"></line><line x1="17" y1="6" x2="19" y2="4"></line><line x1="7" y1="6" x2="5" y2="4"></line></svg>`;
+    const eyeClosedSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+
+    function togglePassword() {
+      const input = document.getElementById('password');
+      const iconContainer = document.getElementById('toggleIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        iconContainer.outerHTML = eyeClosedSVG.replace('<svg', '<svg id="toggleIcon"');
+      } else {
+        input.type = 'password';
+        iconContainer.outerHTML = eyeOpenSVG.replace('<svg', '<svg id="toggleIcon"');
+      }
+    }
+
+    function showMessage(message, type) {
+      const msgEl = document.getElementById('message');
+      msgEl.textContent = message;
+      msgEl.className = `message ${type}`;
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const response = await fetch('/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          localStorage.setItem('adminToken', data.token);
+          showMessage('Login successful! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 1000);
+        } else {
+          showMessage(data.message || 'Invalid email or password', 'error');
+        }
+      } catch (error) {
+        showMessage('Error: ' + error.message, 'error');
+      }
+    });
+
+    // Check if already logged in
+    window.addEventListener('load', () => {
+      const token = localStorage.getItem('adminToken');
+      if (token) {
+        showMessage('You are already logged in. Redirecting...', 'success');
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+      }
+    });
+  </script>
+</body>
+</html>
