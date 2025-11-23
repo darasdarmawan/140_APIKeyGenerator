@@ -16,12 +16,15 @@
 
 5. Database
    - apikey :
+     
      <img width="613" height="306" alt="apikey" src="https://github.com/user-attachments/assets/4459350a-589e-4b9a-88cd-7db2ca188d72" />
      
    - admin:
+     
      <img width="608" height="322" alt="admins" src="https://github.com/user-attachments/assets/aac091c8-2942-4355-af86-fd0283a85f06" />
 
    - user :
+     
      <img width="623" height="279" alt="users" src="https://github.com/user-attachments/assets/d0a3ca3f-a9c3-4161-abca-a3fdc1383a16" />
 
 6. POSTMAN :
